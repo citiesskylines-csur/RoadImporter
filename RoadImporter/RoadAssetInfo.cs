@@ -48,12 +48,12 @@ namespace RoadImporter
         public TunnelAIProperties slopeAI = new TunnelAIProperties();
         public TunnelAIProperties tunnelAI = new TunnelAIProperties();
 
-        public NetModelInfo basicModel;
-        public NetModelInfo elevatedModel;
-        public NetModelInfo bridgeModel;
-        public NetModelInfo slopeModel;
-        public NetModelInfo tunnelModel;
-         
+        public NetModelInfo basicModel = new NetModelInfo();
+        public NetModelInfo elevatedModel = new NetModelInfo();
+        public NetModelInfo bridgeModel = new NetModelInfo();
+        public NetModelInfo slopeModel = new NetModelInfo();
+        public NetModelInfo tunnelModel = new NetModelInfo();
+
         public string name;
 
         public void ReadFromGame(NetInfo gameNetInfo)
