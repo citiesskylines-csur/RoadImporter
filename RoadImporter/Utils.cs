@@ -13,10 +13,10 @@ namespace RoadImporter
         {
             Debug.Log("Invoke copyfromgame");
             Debug.Log($"source:{source}, target:{target}");
-            FieldInfo[] fields = target.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo[] fields = target.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo fieldInfo in fields)
             {
-                FieldInfo gameFieldInfo = source.GetType().GetField(fieldInfo.Name);
+                FieldInfo gameFieldInfo = source.GetType().GetField(fieldInfo.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 Debug.Log(gameFieldInfo);
                 Debug.Log(fieldInfo);
                 if (gameFieldInfo.FieldType == typeof(NetInfo.Lane[]))
@@ -103,7 +103,7 @@ namespace RoadImporter
         {
             Debug.Log("Invoke copytogame");
             Debug.Log($"source:{source}, target:{target}");
-            FieldInfo[] fields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo[] fields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo fieldInfo in fields)
             {
                 if (fieldInfo.GetValue(source) == null)
@@ -111,7 +111,7 @@ namespace RoadImporter
                     Debug.Log($"Field {fieldInfo.Name} is null, skipping import");
                     continue;
                 }
-                FieldInfo gameFieldInfo = target.GetType().GetField(fieldInfo.Name);
+                FieldInfo gameFieldInfo = target.GetType().GetField(fieldInfo.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 Debug.Log(gameFieldInfo);
                 Debug.Log(fieldInfo);
                 if (gameFieldInfo.FieldType.IsArray)

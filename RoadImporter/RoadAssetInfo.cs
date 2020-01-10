@@ -17,6 +17,7 @@ namespace RoadImporter
             public float m_centerAreaWidth;
             public int m_constructionCost = 1000;
             public int m_maintenanceCost = 2;
+            public string m_outsideConnection = null;
         }
 
         public class BridgeAIProperties : RoadAIProperties
@@ -87,12 +88,14 @@ namespace RoadImporter
             gameNetInfo.name = this.name;
             Utils.CopyToGame(this.basic, gameNetInfo);
             RoadAI gameRoadAI = (RoadAI)gameNetInfo.m_netAI;
-
-
             Utils.CopyToGame(this.elevated, gameRoadAI.m_elevatedInfo);
+            gameRoadAI.m_elevatedInfo.name = this.name + "_Elevated0";
             Utils.CopyToGame(this.bridge, gameRoadAI.m_bridgeInfo);
+            gameRoadAI.m_bridgeInfo.name = this.name + "_Bridge0";
             Utils.CopyToGame(this.slope, gameRoadAI.m_slopeInfo);
+            gameRoadAI.m_slopeInfo.name = this.name + "_Slope0";
             Utils.CopyToGame(this.tunnel, gameRoadAI.m_tunnelInfo);
+            gameRoadAI.m_tunnelInfo.name = this.name + "_Tunnel0";
 
             Utils.CopyToGame(this.basicAI, gameRoadAI);
             Utils.CopyToGame(this.elevatedAI, gameRoadAI.m_elevatedInfo.m_netAI);

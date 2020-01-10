@@ -291,9 +291,10 @@ namespace RoadImporter
         public bool m_autoRemove;
         public bool m_overlayVisible = true;
         public ConnectGroup m_connectGroup;
+        public Vehicle.Flags m_setVehicleFlags;
         public Lane[] m_lanes;
         public Segment[] m_segments;
         public Node[] m_nodes;
-
+        public string m_UICategory;
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ColossalFramework.IO;
-using ColossalFramework.UI;
 
 namespace RoadImporter
 {
@@ -13,6 +12,12 @@ namespace RoadImporter
         public static string texturePath = Path.Combine(modPath, "textures");
         
         public static string[] jobs;
+
+        // Optimization level of asset,
+        // O0: same as nomal CRP asset
+        // O1: main texture is not saved and will be loaded using a separate mod. Only saves LODTexture.
+        // O2: both main and LOD textures are not saved. Consumes more RAM than O1 due to game mechanics
+        public static byte optLevel = 1;
 
         public static NetInfo gameAsset;
         public static RoadAssetInfo loadedAsset;
@@ -34,7 +39,9 @@ namespace RoadImporter
                 foreach (string t in textures)
                 {
                     string suffix = t.Substring(t.Length - 6);
-                    File.Copy(Path.Combine(texturePath, name + suffix), Path.Combine(importPath, meshName + suffix), true);
+                    string placeholderName = t[0] == 'd' ? "placeholder.png" : "placeholder2.png";
+                    string sourceFile = optLevel == 0 ? Path.Combine(texturePath, name + suffix) : Path.Combine(texturePath, placeholderName);
+                    File.Copy(sourceFile, Path.Combine(importPath, meshName + suffix), true);
                     if (File.Exists(Path.Combine(texturePath, name + "_lod" + suffix)))
                     {
                         File.Copy(Path.Combine(texturePath, name + "_lod" + suffix), Path.Combine(importPath, meshName + "_lod" + suffix), true);
@@ -68,7 +75,16 @@ namespace RoadImporter
             foreach (string file in files)
             {
                 string dst = Path.Combine(importPath, Path.GetFileName(file));
-                File.Move(file, dst);
+                try
+                {
+                    File.Move(file, dst);
+                }
+                catch (IOException e)
+                {
+                    Debug.Log(e);
+                    Debug.Log($"File {file} already exists!");
+                }
+
             }
             // load asset data from XML
             loadedAsset = Utils.LoadAsset(Path.Combine(importPath, $"{CurrentJob}_data.xml"));
@@ -87,10 +103,18 @@ namespace RoadImporter
                 try
                 {
                     File.Move(file, dst);
-                } catch (IOException)
+                } catch (IOException e)
                 {
+                    Debug.Log(e);
                     Debug.Log("Game still using the file, copy back to RoadImporter folder instead");
-                    File.Copy(file, dst);
+                    try
+                    {
+                        File.Copy(file, dst);
+                    } catch (IOException ee)
+                    {
+                        Debug.Log(ee);
+                        Debug.Log("File is already present in RoadImporter folder");
+                    }
                 }
             }
         } 

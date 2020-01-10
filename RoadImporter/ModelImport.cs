@@ -38,8 +38,11 @@ namespace RoadImporter
 
         public static void RunImport(Job job)
         {
-            job.material = Environment.FindMaterial(job.texture, job.name);
-            if (job.material != null) job.lodMaterial = Environment.GetMaterial(job.texture + "_lod");
+            if (Environment.optLevel <= 1)
+            {
+                job.material = Environment.FindMaterial(job.texture, job.name);
+                if (job.material != null) job.lodMaterial = Environment.GetMaterial(job.texture + "_lod");
+            }
             Debug.Log("call RunImport");
             var partListPanel = TogglePanel(job).components[1];
             Debug.Log(partListPanel);
@@ -53,14 +56,28 @@ namespace RoadImporter
         {
             UIView.Find("RoadEditorSidePanel(Clone)").Find("CloseButton").SimulateClick();
             TogglePanel(job);
-            
+            // apply textures
+            // only apply shader if the mesh has no texture (eg. arrows)
             if (job.isNode)
             {
-                if (job.material != null)
+                if (Environment.optLevel > 1)
+                {
+                    job.target.m_nodes[job.meshid].m_material.shader = job.shader;
+                    job.target.m_nodes[job.meshid].m_material.color = job.color;
+                    job.target.m_nodes[job.meshid].m_lodMaterial.shader = job.shader;
+                    job.target.m_nodes[job.meshid].m_lodMaterial.color = job.color;
+                    if (job.texture != null && job.texture != "")
+                    {
+                        job.target.m_nodes[job.meshid].m_material.name = $"CSUR_TEXTURE/{job.texture}";
+                        job.target.m_nodes[job.meshid].m_lodMaterial.name = $"CSUR_LODTEXTURE/{job.texture}";
+                    }
+                }
+                else if (job.material != null)
                 {
                     job.target.m_nodes[job.meshid].m_material = job.material;
                     job.target.m_nodes[job.meshid].m_lodMaterial = job.lodMaterial;
-                } else
+                }
+                else
                 {
                     job.target.m_nodes[job.meshid].m_material.shader = job.shader;
                     job.target.m_nodes[job.meshid].m_material.color = job.color;
@@ -69,13 +86,32 @@ namespace RoadImporter
                     Environment.CacheMaterial(job.texture, job.target.m_nodes[job.meshid].m_material);
                     Environment.CacheMaterial(job.texture + "_lod", job.target.m_nodes[job.meshid].m_lodMaterial);
                 }
-                
-            } else
+                if (Environment.optLevel == 1 && job.texture != null && job.texture != "")
+                {
+                    //job.target.m_nodes[job.meshid].m_material.shader = job.shader;
+                    //job.target.m_nodes[job.meshid].m_material.color = job.color;
+                    job.target.m_nodes[job.meshid].m_material.name = $"CSUR_TEXTURE/{job.texture}";
+                }
+
+            }
+            else
             {
-                if (job.material != null)
+                if (Environment.optLevel > 1)
+                {
+                    job.target.m_segments[job.meshid].m_material.shader = job.shader;
+                    job.target.m_segments[job.meshid].m_material.color = job.color;
+                    job.target.m_segments[job.meshid].m_lodMaterial.shader = job.shader;
+                    job.target.m_segments[job.meshid].m_lodMaterial.color = job.color;
+                    if (job.texture != null && job.texture != "")
+                    {
+                        job.target.m_segments[job.meshid].m_material.name = $"CSUR_TEXTURE/{job.texture}";
+                        job.target.m_segments[job.meshid].m_lodMaterial.name = $"CSUR_LODTEXTURE/{job.texture}";
+                    }
+                }
+                else if (job.material != null)
                 {
                     job.target.m_segments[job.meshid].m_material = job.material;
-                    job.target.m_segments[job.meshid].m_lodMaterial = job.lodMaterial;
+                    job.target.m_segments[job.meshid].m_lodMaterial = new Material(job.lodMaterial);
                 }
                 else
                 {
@@ -86,8 +122,13 @@ namespace RoadImporter
                     Environment.CacheMaterial(job.texture, job.target.m_segments[job.meshid].m_material);
                     Environment.CacheMaterial(job.texture + "_lod", job.target.m_segments[job.meshid].m_lodMaterial);
                 }
-            }
-            
+                if (Environment.optLevel == 1 && job.texture != null && job.texture != "")
+                {
+                    //job.target.m_segments[job.meshid].m_material = new Material(job.shader);
+                    //job.target.m_segments[job.meshid].m_material.color = job.color;
+                    job.target.m_segments[job.meshid].m_material.name = $"CSUR_TEXTURE/{job.texture}";
+                }
+            } 
         }
     }
 }

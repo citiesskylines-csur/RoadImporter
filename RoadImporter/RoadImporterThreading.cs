@@ -57,7 +57,7 @@ namespace RoadImporter
             //Debug.Log($"running job queue: {jobQueue.Count} jobs in queue");
             bool importFinished = WatchImportStatus();
             // import has finished
-            if (importFinished) InvokeSavePanel(Environment.CurrentJob, $"test description: {Environment.CurrentJob}");
+            if (importFinished) InvokeSavePanel(Environment.CurrentJob, Environment.CurrentJob);
             bool saveFinished = WatchSaveStatus();
             if (saveFinished) Environment.NextJob();
             _actionProcessed = false;
