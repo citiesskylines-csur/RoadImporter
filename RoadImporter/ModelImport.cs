@@ -74,18 +74,18 @@ namespace RoadImporter
                 }
                 else if (job.material != null)
                 {
-                    job.target.m_nodes[job.meshid].m_material = job.material;
-                    job.target.m_nodes[job.meshid].m_lodMaterial = job.lodMaterial;
+                    job.target.m_nodes[job.meshid].m_material = new Material(job.material);
+                    job.target.m_nodes[job.meshid].m_lodMaterial = new Material(job.lodMaterial);
                 }
                 else
                 {
-                    job.target.m_nodes[job.meshid].m_material.shader = job.shader;
-                    job.target.m_nodes[job.meshid].m_material.color = job.color;
-                    job.target.m_nodes[job.meshid].m_lodMaterial.shader = job.shader;
-                    job.target.m_nodes[job.meshid].m_lodMaterial.color = job.color;
                     Environment.CacheMaterial(job.texture, job.target.m_nodes[job.meshid].m_material);
                     Environment.CacheMaterial(job.texture + "_lod", job.target.m_nodes[job.meshid].m_lodMaterial);
                 }
+                job.target.m_nodes[job.meshid].m_material.shader = job.shader;
+                job.target.m_nodes[job.meshid].m_material.color = job.color;
+                job.target.m_nodes[job.meshid].m_lodMaterial.shader = job.shader;
+                job.target.m_nodes[job.meshid].m_lodMaterial.color = job.color;
                 if (Environment.optLevel == 1 && job.texture != null && job.texture != "")
                 {
                     //job.target.m_nodes[job.meshid].m_material.shader = job.shader;
@@ -110,18 +110,18 @@ namespace RoadImporter
                 }
                 else if (job.material != null)
                 {
-                    job.target.m_segments[job.meshid].m_material = job.material;
+                    job.target.m_segments[job.meshid].m_material = new Material(job.material);
                     job.target.m_segments[job.meshid].m_lodMaterial = new Material(job.lodMaterial);
                 }
                 else
                 {
-                    job.target.m_segments[job.meshid].m_material.shader = job.shader;
-                    job.target.m_segments[job.meshid].m_material.color = job.color;
-                    job.target.m_segments[job.meshid].m_lodMaterial.shader = job.shader;
-                    job.target.m_segments[job.meshid].m_lodMaterial.color = job.color;
                     Environment.CacheMaterial(job.texture, job.target.m_segments[job.meshid].m_material);
                     Environment.CacheMaterial(job.texture + "_lod", job.target.m_segments[job.meshid].m_lodMaterial);
                 }
+                job.target.m_segments[job.meshid].m_material.shader = job.shader;
+                job.target.m_segments[job.meshid].m_material.color = job.color;
+                job.target.m_segments[job.meshid].m_lodMaterial.shader = job.shader;
+                job.target.m_segments[job.meshid].m_lodMaterial.color = job.color;
                 if (Environment.optLevel == 1 && job.texture != null && job.texture != "")
                 {
                     //job.target.m_segments[job.meshid].m_material = new Material(job.shader);
