@@ -23,7 +23,7 @@ For optimal performance of Road Importer, the mod needs to be run in the `-noWor
 
 Please be advised that **memory leaks** may occur in the Asset Editor. This implies that in a exceedingly large job, the memory used by `Cities.exe` will increase to >10 or >20 GB, eventually leading to the game crashing. **It is recommended that the total number of roads in a single job is kept smaller than 200.** 
 
-Please be advised **thread leaks** may occur in the Asset Editor. When a model is being imported, the game will compress any reasonably-sized texture and **texture compression adds 32 threads to the total thread count in `Cities.exe`.** The Asset Editor uses about 150-170 threads when it its initially loaded, and the game will crash when the number of threads exceeds 1024. This implies that the number of *unique* textures involved in a road import job should be always smaller than **25**. 
+Please be advised **thread leaks** may occur in the Asset Editor. When a model is being imported, the game will compress any reasonably-sized texture and **texture compression adds 32 threads to the total thread count in `Cities.exe`.** The Asset Editor uses about 150-170 threads when it is initially loaded, and the game will crash when the number of threads exceeds 1024. This implies that the number of *unique* textures involved in a road import job should be always smaller than **25**. 
 
 ## Texture Optimization
 Road Importer provides different texture optimization levels for creating packages of large numbers of road assets. It is defined using the `optLevel` variable in `Environment.cs`;
