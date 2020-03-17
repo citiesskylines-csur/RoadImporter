@@ -20,7 +20,7 @@ namespace RoadImporter
         public static byte optLevel = 1;
 
         public static NetInfo gameAsset;
-        public static RoadAssetInfo loadedAsset;
+        public static IAssetInfo loadedAsset;
 
         public static int jobId = -1;
 
@@ -87,7 +87,7 @@ namespace RoadImporter
 
             }
             // load asset data from XML
-            loadedAsset = Utils.LoadAsset(Path.Combine(importPath, $"{CurrentJob}_data.xml"));
+            loadedAsset = Utils.LoadAsset(Path.Combine(importPath, $"{CurrentJob}_data.xml"), gameAsset.m_netAI.GetType());
         }
 
         private static void CleanUp()

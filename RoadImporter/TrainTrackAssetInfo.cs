@@ -2,26 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 
 namespace RoadImporter
 {
-    public class RoadAssetInfo : IAssetInfo
+    public class TrainTrackAssetInfo : IAssetInfo
     {
-        public class RoadAIProperties
+        public class TrainTrackAIProperties
         {
-            public bool m_trafficLights;
-            public bool m_highwayRules;
-            public bool m_accumulateSnow = true;
-            public int m_noiseAccumulation = 10;
-            public float m_noiseRadius = 40f;
-            public float m_centerAreaWidth;
             public int m_constructionCost = 1000;
             public int m_maintenanceCost = 2;
+            public int m_noiseAccumulation = 10;
+            public float m_noiseRadius = 40f;
             public string m_outsideConnection = null;
         }
 
-        public class BridgeAIProperties : RoadAIProperties
+        public class TrainBridgeAIProperties : TrainTrackAIProperties
         {
             public string m_bridgePillarInfo;
             public string m_middlePillarInfo;
@@ -32,23 +27,23 @@ namespace RoadImporter
             public bool m_canModify = true;
         }
 
-        public class TunnelAIProperties : RoadAIProperties
+        public class TrainTunnelAIProperties : TrainTrackAIProperties
         {
             public bool m_canModify = true;
         }
 
 
-        public CSNetInfo basic;
-        public CSNetInfo elevated;
-        public CSNetInfo bridge;
-        public CSNetInfo slope;
-        public CSNetInfo tunnel;
+        public CSNetInfo basic = new CSNetInfo();
+        public CSNetInfo elevated = new CSNetInfo();
+        public CSNetInfo bridge = new CSNetInfo();
+        public CSNetInfo slope = new CSNetInfo();
+        public CSNetInfo tunnel = new CSNetInfo();
 
-        public RoadAIProperties basicAI;
-        public BridgeAIProperties elevatedAI;
-        public BridgeAIProperties bridgeAI;
-        public TunnelAIProperties slopeAI;
-        public TunnelAIProperties tunnelAI;
+        public TrainTrackAIProperties basicAI = new TrainTrackAIProperties();
+        public TrainBridgeAIProperties elevatedAI = new TrainBridgeAIProperties();
+        public TrainBridgeAIProperties bridgeAI = new TrainBridgeAIProperties();
+        public TrainTunnelAIProperties slopeAI = new TrainTunnelAIProperties();
+        public TrainTunnelAIProperties tunnelAI = new TrainTunnelAIProperties();
 
         public NetModelInfo basicModel = new NetModelInfo();
         public NetModelInfo elevatedModel = new NetModelInfo();
@@ -58,25 +53,13 @@ namespace RoadImporter
 
         public string name;
 
+
+
         public void ReadFromGame(NetInfo gameNetInfo)
         {
             this.name = gameNetInfo.name;
-            basic = new CSNetInfo();
-            elevated = new CSNetInfo();
-            bridge = new CSNetInfo();
-            slope = new CSNetInfo();
-            tunnel = new CSNetInfo();
-
-            basicAI = new RoadAIProperties();
-            elevatedAI = new BridgeAIProperties();
-            bridgeAI = new BridgeAIProperties();
-            slopeAI = new TunnelAIProperties();
-            tunnelAI = new TunnelAIProperties();
-
-
             Utils.CopyFromGame(gameNetInfo, this.basic);
-            RoadAI gameRoadAI = (RoadAI)gameNetInfo.m_netAI;
-
+            TrainTrackAI gameRoadAI = (TrainTrackAI)gameNetInfo.m_netAI;
             Utils.CopyFromGame(gameRoadAI.m_elevatedInfo, this.elevated);
             Utils.CopyFromGame(gameRoadAI.m_bridgeInfo, this.bridge);
             Utils.CopyFromGame(gameRoadAI.m_slopeInfo, this.slope);
@@ -93,7 +76,6 @@ namespace RoadImporter
             bridgeModel.Read(gameRoadAI.m_bridgeInfo, "Bridge");
             slopeModel.Read(gameRoadAI.m_slopeInfo, "Slope");
             tunnelModel.Read(gameRoadAI.m_tunnelInfo, "Tunnel");
-
         }
 
 
@@ -101,7 +83,7 @@ namespace RoadImporter
         {
             gameNetInfo.name = this.name;
             Utils.CopyToGame(this.basic, gameNetInfo);
-            RoadAI gameRoadAI = (RoadAI)gameNetInfo.m_netAI;
+            TrainTrackAI gameRoadAI = (TrainTrackAI)gameNetInfo.m_netAI;
             if (gameRoadAI.m_elevatedInfo != null)
             {
                 Utils.CopyToGame(this.elevated, gameRoadAI.m_elevatedInfo);
@@ -128,14 +110,13 @@ namespace RoadImporter
             Utils.CopyToGame(this.bridgeAI, gameRoadAI.m_bridgeInfo?.GetAI());
             Utils.CopyToGame(this.slopeAI, gameRoadAI.m_slopeInfo?.GetAI());
             Utils.CopyToGame(this.tunnelAI, gameRoadAI.m_tunnelInfo?.GetAI());
-            Utils.RefreshRoadEditor();
-            Debug.Log(this.basicModel);
-            this.basicModel?.Apply(gameNetInfo, "Basic");
-            this.elevatedModel?.Apply(gameRoadAI.m_elevatedInfo, "Elevated");
-            this.bridgeModel?.Apply(gameRoadAI.m_bridgeInfo, "Bridge");
-            this.slopeModel?.Apply(gameRoadAI.m_slopeInfo, "Slope");
-            this.tunnelModel?.Apply(gameRoadAI.m_tunnelInfo, "Tunnel");
 
+            Utils.RefreshRoadEditor();
+            basicModel?.Apply(gameNetInfo, "Basic");
+            elevatedModel?.Apply(gameRoadAI.m_elevatedInfo, "Elevated");
+            bridgeModel?.Apply(gameRoadAI.m_bridgeInfo, "Bridge");
+            slopeModel?.Apply(gameRoadAI.m_slopeInfo, "Slope");
+            tunnelModel?.Apply(gameRoadAI.m_tunnelInfo, "Tunnel");
         }
     }
 }

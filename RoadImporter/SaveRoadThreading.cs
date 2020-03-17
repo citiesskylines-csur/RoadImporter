@@ -18,13 +18,19 @@ namespace RoadImporter
                 _actionProcessed = true;
                 var asset = ToolsModifierControl.toolController.m_editPrefabInfo as NetInfo;
 
+                if (asset.m_netAI.GetType() == typeof(RoadAI))
+                {
+                    RoadAssetInfo myRoad = new RoadAssetInfo();
+                    myRoad.ReadFromGame(asset);
+                    Utils.SaveAsset(myRoad, Path.Combine(Environment.modPath, $"{myRoad.name}.xml"), typeof(RoadAI));
+                } else if (asset.m_netAI.GetType() == typeof(TrainTrackAI))
+                {
+                    TrainTrackAssetInfo myRoad = new TrainTrackAssetInfo();
+                    myRoad.ReadFromGame(asset);
+                    Utils.SaveAsset(myRoad, Path.Combine(Environment.modPath, $"{myRoad.name}.xml"), typeof(TrainTrackAI));
+                }
                 ExceptionPanel panel = UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel");
-                panel.SetMessage("Road Importer", $"Attempt to save NetInfo {asset.name}", false);
-
-                RoadAssetInfo myRoad = new RoadAssetInfo();
-                myRoad.ReadFromGame(asset);
-                
-                Utils.SaveAsset(myRoad, $"{myRoad.name}.xml");
+                panel.SetMessage("Road Importer", $"Saved NetInfo {asset.name}", false);
 
             }
             else

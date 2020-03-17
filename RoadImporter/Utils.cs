@@ -13,6 +13,7 @@ namespace RoadImporter
         {
             Debug.Log("Invoke copyfromgame");
             Debug.Log($"source:{source}, target:{target}");
+            if (source == null || target == null) return;
             FieldInfo[] fields = target.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo fieldInfo in fields)
             {
@@ -103,6 +104,7 @@ namespace RoadImporter
         {
             Debug.Log("Invoke copytogame");
             Debug.Log($"source:{source}, target:{target}");
+            if (source == null || target == null) return;
             FieldInfo[] fields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (FieldInfo fieldInfo in fields)
             {
@@ -186,19 +188,46 @@ namespace RoadImporter
             }
         }
 
-        public static void SaveAsset(RoadAssetInfo asset, string filename)
+        public static void SaveAsset(IAssetInfo asset, string filename, Type netAIType)
         {
-            XmlSerializer ser = new XmlSerializer(typeof(RoadAssetInfo));
+            
             TextWriter writer = new StreamWriter(filename);
-            ser.Serialize(writer, asset);
+            if (netAIType == typeof(RoadAI))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(RoadAssetInfo));
+                ser.Serialize(writer, (RoadAssetInfo)asset);
+            }
+            else if (netAIType == typeof(TrainTrackAI))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(TrainTrackAssetInfo));
+                ser.Serialize(writer, (TrainTrackAssetInfo)asset);
+            }
+            else
+            {
+                throw new NotImplementedException("Unsupported network type!");
+            }
+
             writer.Close();
         }
 
-        public static RoadAssetInfo LoadAsset(string filename)
+        public static IAssetInfo LoadAsset(string filename, Type netAIType)
         {
-            XmlSerializer ser = new XmlSerializer(typeof(RoadAssetInfo));
+            
             StreamReader reader = new StreamReader(filename);
-            RoadAssetInfo myNet = (RoadAssetInfo) ser.Deserialize(reader);
+            IAssetInfo myNet;
+            if (netAIType == typeof(RoadAI))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(RoadAssetInfo));
+                myNet = (RoadAssetInfo)ser.Deserialize(reader);
+            } else if (netAIType == typeof(TrainTrackAI))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(TrainTrackAssetInfo));
+                myNet = (TrainTrackAssetInfo)ser.Deserialize(reader);
+            }
+            else
+            {
+                throw new NotImplementedException("Unsupported network type!");
+            }
             return myNet;
         }
 

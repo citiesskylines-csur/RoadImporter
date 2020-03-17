@@ -141,12 +141,18 @@ namespace RoadImporter
         {
             SaveAssetPanel save = UIView.Find("SaveAssetPanel(Clone)").GetComponent<SaveAssetPanel>();
             string thumbPath = typeof(SaveAssetPanel).GetField("m_ThumbPath", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(save) as string;
-            File.Copy(Path.Combine(Environment.importPath, name + "_thumb.png"), thumbPath + ".png", true);
-            File.Copy(Path.Combine(Environment.importPath, name + "_hovered.png"), thumbPath + "_hovered.png", true);
-            File.Copy(Path.Combine(Environment.importPath, name + "_pressed.png"), thumbPath + "_pressed.png", true);
-            File.Copy(Path.Combine(Environment.importPath, name + "_focused.png"), thumbPath + "_focused.png", true);
-            File.Copy(Path.Combine(Environment.importPath, name + "_disabled.png"), thumbPath + "_disabled.png", true);
-            typeof(SaveAssetPanel).GetMethod("ReloadThumbnail", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(save, new object[] { false });
+            if (File.Exists(Path.Combine(Environment.importPath, name + "_thumb.png")))
+            {
+                File.Copy(Path.Combine(Environment.importPath, name + "_thumb.png"), thumbPath + ".png", true);
+                if (File.Exists(Path.Combine(Environment.importPath, name + "_hovered.png")))
+                {
+                    File.Copy(Path.Combine(Environment.importPath, name + "_hovered.png"), thumbPath + "_hovered.png", true);
+                    File.Copy(Path.Combine(Environment.importPath, name + "_pressed.png"), thumbPath + "_pressed.png", true);
+                    File.Copy(Path.Combine(Environment.importPath, name + "_focused.png"), thumbPath + "_focused.png", true);
+                    File.Copy(Path.Combine(Environment.importPath, name + "_disabled.png"), thumbPath + "_disabled.png", true);
+                }
+                typeof(SaveAssetPanel).GetMethod("ReloadThumbnail", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(save, new object[] { false });
+            }
         }
     }
 }
