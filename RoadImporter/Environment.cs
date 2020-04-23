@@ -92,9 +92,13 @@ namespace RoadImporter
 
         private static void CleanUp()
         {
-            // remove texture files copied
+            // remove texture files copied if optimization is enabled
             string[] files = Directory.GetFiles(importPath, "*_?.png", SearchOption.AllDirectories);
-            foreach (string file in files) File.Delete(file);
+            if (optLevel > 0)
+            {
+                foreach (string file in files) File.Delete(file);
+            }
+            
             // move files back to mod directory
             files = Directory.GetFiles(importPath, CurrentJob + "*.*", SearchOption.AllDirectories);
             foreach (string file in files)
