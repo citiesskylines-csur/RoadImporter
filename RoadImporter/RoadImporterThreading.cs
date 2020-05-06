@@ -72,7 +72,6 @@ namespace RoadImporter
                 ConsumeJob();
                 ModelImport.RunImport(_workingJob);
 
-
                 var fileList = UIView.Find("ModelImportPanel").Find("FileList") as UIListBox;
                 
                 int index = Array.IndexOf(fileList.items, $"{_workingJob.name}.FBX");
@@ -92,7 +91,7 @@ namespace RoadImporter
             {
                 if (_continueButton.isEnabled)
                 {
-					Debug.Log("Click continue");
+                    Debug.Log("Click continue");
                     if (_isOBJ)
                     {
                         var scaleBox = UIView.Find("ModelImportPanel").Find("SettingContainer").components[1] as UITextField;
