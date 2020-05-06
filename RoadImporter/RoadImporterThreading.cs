@@ -20,6 +20,7 @@ namespace RoadImporter
         private int _isSaving = 0;
         private readonly object jobQueueLock = new object();
 
+        private bool _isOBJ = false;
 
         public void ProduceJob(ModelImport.Job job)
         {
@@ -70,11 +71,18 @@ namespace RoadImporter
                 _hasJobs = true;
                 ConsumeJob();
                 ModelImport.RunImport(_workingJob);
+
                 var fileList = UIView.Find("ModelImportPanel").Find("FileList") as UIListBox;
+                
                 int index = Array.IndexOf(fileList.items, $"{_workingJob.name}.FBX");
                 if (index < 0)
                 {
                     index = Array.IndexOf(fileList.items, $"{_workingJob.name}.fbx");
+                    if (index < 0)
+                    {
+                        index = Array.IndexOf(fileList.items, $"{_workingJob.name}.obj");
+                        _isOBJ = true;
+                    }
                 }
                 fileList.selectedIndex = index;
                 _continueButton = UIView.Find("ModelImportPanel").Find("SelectAsset").components[0] as UIButton;
@@ -84,6 +92,11 @@ namespace RoadImporter
                 if (_continueButton.isEnabled)
                 {
                     Debug.Log("Click continue");
+                    if (_isOBJ)
+                    {
+                        var scaleBox = UIView.Find("ModelImportPanel").Find("SettingContainer").components[1] as UITextField;
+                        scaleBox.text = "100";
+                    }
                     _continueButton.SimulateClick();
                     _continueButton = null;
                     ModelImport.FinalizeImport(_workingJob);
