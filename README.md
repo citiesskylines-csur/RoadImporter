@@ -1,5 +1,5 @@
 # Road Importer
-Automated road asset creation utilities for Cities: Skylines. The mod reads FBX models and XML files containing parameters for the road to make CRP assets in the road editor.
+Automated road asset creation utilities for Cities: Skylines. The mod reads FBX/OBJ models and XML files containing parameters for the road to make CRP assets in the road editor.
 
 ## Installation
 The mod is to be installed the same as a local mod in the game, but it also keeps its own data. The compiled file needs to be placed in `C:\Users\%USERNAME%\AppData\Local\Colossal Order\Cities_Skylines\Addons\Mods\RoadImporter\`. The post-build script in the Visual Studio project file does this automaticaly, if the DLL file is compiled from source. 
